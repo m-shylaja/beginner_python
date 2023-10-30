@@ -1,5 +1,5 @@
-1. Spark Architecture
- 
+Pyspark 
+1.Spark Architecture
 
 2. 6 worker nodes how many executors?
 -> By default 2 Executor for 1 Worker Nodes, So 6 Worker Nodes is 6x 2= 12
