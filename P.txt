@@ -1,0 +1,160 @@
+1. Spark Architecture
+ 
+
+2. 6 worker nodes how many executors?
+-> By default 2 Executor for 1 Worker Nodes, So 6 Worker Nodes is 6x 2= 12
+12 Executors for 6 Worker Nodes.
+
+3. Trigger any action there will stges, job and task which will create first
+when you trigger an action in Spark, the stages are created first based on the logical execution plan, followed by the creation of jobs, and finally, tasks are generated for each stage within a job.
+Stages: Spark operations are broken down into stages. A stage represents a set of transformations that can be executed together without needing to shuffle data between tasks. When you trigger an action, Spark performs a logical query optimization to create a Directed Acyclic Graph (DAG) of stages. These stages are organized based on the dependencies between transformations. Stages are created before any jobs or tasks.
+
+Job: Once the stages are defined, Spark groups them into jobs. A job is a collection of stages that can be executed together. Jobs are created based on the DAG of stages, and they correspond to the high-level action that you triggered in your Spark application. Each action, such as count() or saveAsTextFile(), typically corresponds to one job. The creation of jobs happens after stages have been defined.
+
+Tasks: After jobs are created, Spark breaks down each stage within a job into individual tasks. Tasks are the smallest unit of work in Spark and correspond to the parallel execution of transformations on partitions of data. Tasks are created for each stage within a job and are based on the number of partitions of the input data and the available cluster resources. The creation of tasks happens after jobs are defined.
+
+4. what is  DAG and define the vertices and edge?
+-> Direct - Transformation is an action which transitions data partition state from A to B.
+Acyclic -Transformation cannot return to the older partition
+A set of Vertices and Edges, where vertices represent the RDDs and the edges represent the Operation to be applied on RDD. In Spark DAG, every edge directs from earlier to later in the sequence. On the calling of Action, the created DAG submits to the DAG Scheduler which further splits the graph into the stages of the task.
+Vertices - Stages, Edges- Job
+5. Suppose the white transformation occurred.
+OK, so DAG scheduler will create another stage or it will do in this it will do the task in a single stage when there is a wide transformation.
+->when a wide transformation occurs, the DAG scheduler in Spark usually creates multiple stages to manage the various steps involved in the transformation, including the shuffle stage for data exchange
+
+6. The event log tab, the Driver log tab OK, the mattress is stab OK, so can you explain me the purpose of event log that?
+-> the Event Log is a crucial feature for monitoring and troubleshooting Spark applications. It provides a detailed record of events and actions that occur during the execution of a Spark application. 
+7.  what is auto scaling is?
+-> Increasing the number of Worker Nodes
+
+8. You want to change some configuration of cluster., I don't know if you have the access to like changes or modification any cluster.
+-> I don't have direct access to modify or change the configuration of a specific cluster or system
+- If you need to make changes or modifications to a cluster's configuration, you will typically need administrative access to the cluster 
+9. what is DBU is?
+-> Database Unit: definitions and pricing related to DBUs can vary based on the database service provider and the service tier you choose. The goal of using DBUs is to provide a more abstract and simplified way to allocate and understand the resources and performance of your cloud-based databases, allowing you to scale your databases according to your application's needs.
+10. Each individual cell has some size., Can you tell me the size of that individual said in Databricks notebook?
+-> the size of an individual cell, whether it's a code cell or a Markdown cell, can vary depending on the content you place within it. Databricks doesn't impose strict size limitations on cells in terms of the amount of text or code they can contain.
+
+11. Total flight flight table is created by using Delta OK and put table is created by using DBFS. OK., , Now somehow I deleted the data of both the table OK and now I want to recover the data of that tables., So can I recover both flight and airport data table data?
+->  flight" table as a Delta Lake table, Delta Lake provides some built-in features for data versioning and recovery.
+- List available versions of the table
+DESCRIBE HISTORY flight;
+- Restore the table to a specific version
+RESTORE flight TO VERSION <version_number>;
+
+ "Airport Table" DBFS doesn't have built-in versioning or recovery features like Delta tables.
+To recover data from a DBFS table, you would need to rely on backup and recovery solutions
+
+12. So uh, suppose I declare 1 variable in Python language., So can I use that variable in another language in database?
+-> cannot directly use a variable declared in one programming language in another language within a database, you can transfer data and variables between languages using various integration techniques and tools. 
+
+13. OK, so so do you know what is a QE is?, , Uh till uh is actually a handle skewness in a streaming data.
+-> Yes
+13.  Z ordering:
+Z-ordering is a technique to optimize query performance but requires careful consideration of your specific use case and query patterns to choose the right columns for Z-ordering.
+
+-- Create a Delta Lake table and specify Z-ordering on columns
+CREATE TABLE my_table
+USING delta
+LOCATION '/mnt/data/my_table'
+AS
+SELECT *
+FROM source_data
+-- Z-ordering on columns "column1" and "column2"
+ZORDER BY column1, column2;
+
+
+14. Did you heard the word dynamic partition pruning?, What is the purpose of dynamic partition pruning?
+-> Dynamic partition pruning typically works by analyzing query predicates and partition metadata to determine which partitions can be safely excluded from the query execution. This is done dynamically at runtime, hence the term "dynamic" partition pruning.
+
+-to improve query performance by reducing the amount of data that needs to be scanned during query execution, thus minimizing I/O and processing overhead.
+
+15. Suppose there is a data frame OK and I want to., , I want to know its physical plan.,  I want to know in the back end how database execute this data frame.
+-> Explain()
+df.explain(), Spark will display the physical plan in the console, showing the various stages and steps involved in executing the DataFrame's operations.
+
+The output will include details such as:
+
+The order in which operations are performed.
+Physical and logical plans for each operation.
+Information about shuffling, if applicable.
+Optimizations applied by Spark's Catalyst query optimizer.
+
+== Physical Plan ==
+*(1) Scan ExistingRDD[columns: [...]]
+(2) Filter (condition)
+   ...
+(3) Project (columns)
+   ...
+(4) Aggregate (aggregation)
+   df.explain("extended") to get more detailed information about the physical plan
+
+16. OK, now it gives me the physical plan of that data frame.
+So can you tell me like in like we apply the inner join.
+OK, now word join databricks apply in the back end.
+-> 
+16. The vacuum model and queen 160 hours.
+-> The "vacuum" operation in Delta Lake is used to clean up and reclaim storage space by removing these old versions of data that are no longer needed
+-- Manually trigger a vacuum operation with a retention period of 7 days
+VACUUM table_name RETAIN 7 DAYS;
+ table_name is the name of the Delta Lake table, and 7 DAYS specifies a retention period of 7 days. The vacuum operation will remove data versions older than 7 days.
+
+-- Manually trigger a vacuum operation with a retention period of 0
+VACUUM table_name RETAIN 0 HOURS;
+cautious when using a retention period of 0, as it can result in permanent data loss, and there is no way to recover the deleted data.
+
+
+
+17. /mnt/rawzone/data/impala_01022023.csv	impala_01022023.csv
+/mnt/rawzone/data/impala_03022023.csv	impala_03022023.csv
+/mnt/rawzone/data/db2_21022023.csv	db2_21022023.csv
+/mnt/rawzone/data/impala_11022023.csv	impala_11022023.csv
+/mnt/rawzone/data/db2_01022023.csv	db2_01022023.csv
+/mnt/rawzone/data/impala_01022023.csv	impala_01022023.csv
+/mnt/rawzone/data/impala_16022023.csv	impala_16022023.csv
+greater than three February.
+-> 
+18. id	value	category
+1	apple	fruit   
+2	carrot	vegetable
+3	grape	fruit   
+4	tomato	fruit   
+5	pepper	vegetable
+6	melon	fruit   
+ output: 
+ 
+
+id	value	category_frequency	 
+1	apple	4	 
+2	carrot	2	 
+3	grape	4	 
+4	tomato	4	 
+5	pepper	2	 
+6	melon	4
+
+19. 
+url
+https://www.gmattt.com/page2
+http://www.test.com/page2
+https://www.example.com/page1 
+
+
+url	domain
+https://www.gmattt.com/page2	gmatt.com
+http://www.test.com/page2	test.com
+https://www.example.com/page1	example.com
+ 
+
+
+
+
+
+- file Handling
+- cluster Configuration
+- Query Optimization
+
+- Spark Interval: 
+Eg:  Theoritical
+
+
+
