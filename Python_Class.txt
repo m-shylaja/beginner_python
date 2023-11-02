@@ -7,6 +7,7 @@ class MyClass:
 p1 = MyClass
 print(p1)
 
+________________________________________________________________________________________________________________________________________
 __init__() function:
 All classes have a function called __init__(), which is executed when the class is being initiated.
 __init__() assigns the values to object , or other operations that are necessary to do when object is created.
@@ -19,6 +20,7 @@ class Person:
  p = person("Shylu",23)
 print(p.name)
 print(p.age)
+-------------------------------------------------------------------------------------------------------
 
 __str__() function:
 controls what should returned when the object represents the string
@@ -31,6 +33,7 @@ class Person:
 		return f"{self.name}({self.age})"
 p = Person("Shylu",24)
 print(p)
+-------------------------------------------------------------------------------------------------------
 
 Object Methods:
 Objects contains methods. Methods in object are functions that belong to the object
@@ -45,13 +48,18 @@ class Person:
 p = Person("Shylu",99)
 p.myFunct()
 
+---------------------------------------------------------------------------------------------------------
+
 Self: self parameter is a reference to the current instance of the class, access the variable belong to the class.
+-----------------------------------------------------------------------------------------------------------
 
 Pass: 
 class cannot be empty so it use a Pass function.
 Example:
 class Person:
  	pass
+
+---------------------------------------------------------------------------------------------------------------
 
 Example: Complex Number
 class MyComplexNumber
